@@ -529,7 +529,7 @@ section {
 }
 
 .writing-item:hover {
-  transform: translateX(8px);
+  transform: translateY(-5px) translateX(8px);
 }
 
 .writing-item-icon {
