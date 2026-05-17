@@ -72,7 +72,7 @@
 <body>
 
   <nav>
-    <a href="/" class="nav-logo">ismael<span>.marin</span></a>
+    <a href="https://ismaelmarin.dev/" class="nav-logo">ismael<span>.marin</span></a>
     <ul class="nav-links">
       <li><a href="#work">Work</a></li>
       <li><a href="#stack">Stack</a></li>
@@ -150,6 +150,38 @@
     <h2 class="section-title">Things I've built</h2>
 
     <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-header">
+          <a href="https://github.com/igmarin/ruby-skill-bench" target="_blank" class="project-name">
+            ruby-skill-bench
+          </a>
+          <span class="project-badge">Published on RubyGems</span>
+        </div>
+        <div class="project-metrics" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <a href="https://rubygems.org/gems/ruby-skill-bench" target="_blank"><img src="https://img.shields.io/gem/v/ruby-skill-bench?style=flat-square&amp;color=CC0000" alt="Gem Version"></a>
+          <a href="https://rubygems.org/gems/ruby-skill-bench" target="_blank"><img src="https://img.shields.io/gem/dt/ruby-skill-bench?style=flat-square&amp;color=4169E1" alt="Gem Downloads"></a>
+        </div>
+        <p class="project-desc">
+          High-fidelity evaluation engine for benchmarking AI agent skills across any stack (Rails-first, but extensible).
+          Compare baseline vs. skill-enhanced agent runs with 100% reproducibility via isolated Git sandboxes.
+        </p>
+        <ul class="project-features">
+          <li>Side-by-Side Evaluation: Quantify the impact of specific context or skills on agent performance</li>
+          <li>Isolated Git Sandboxes: Clean diffs, zero side-effects, and 100% reproducibility for every run</li>
+          <li>Multi-Provider: Native support for Anthropic, Gemini, OpenAI, DeepSeek, Groq, Ollama, and more</li>
+          <li>LLM-based blind judging across Correctness, Skill Adherence, Code Quality, and Test Coverage</li>
+        </ul>
+        <div class="project-code">
+          $ gem install ruby-skill-bench
+        </div>
+        <div class="project-tools">
+          <span class="tool-tag">Ruby</span>
+          <span class="tool-tag">AI Benchmarking</span>
+          <span class="tool-tag">Evaluation</span>
+          <span class="tool-tag">Git Sandboxing</span>
+        </div>
+      </div>
 
       <div class="project-card">
         <div class="project-header">
@@ -241,12 +273,15 @@
         </div>
         <div class="project-tools" style="margin-bottom: 0;">
           <span class="tool-tag">Ruby on Rails</span>
+          <span class="tool-tag">Python</span>
+          <span class="tool-tag">Go</span>
           <span class="tool-tag">PostgreSQL</span>
           <span class="tool-tag">Redis</span>
-          <span class="tool-tag">Go</span>
-          <span class="tool-tag">Docker</span>
+          <span class="tool-tag">Cloudflare</span>
+          <span class="tool-tag">Vercel</span>
           <span class="tool-tag">AWS</span>
-          <span class="tool-tag">CircleCI</span>
+          <span class="tool-tag">Docker</span>
+          <span class="tool-tag">Snyk</span>
         </div>
       </div>
 
@@ -255,11 +290,18 @@
           <div class="project-name">AI & Tooling</div>
         </div>
         <div class="project-tools" style="margin-bottom: 0;">
-          <span class="tool-tag">Claude (Anthropic)</span>
+          <span class="tool-tag">Gemini</span>
+          <span class="tool-tag">Claude</span>
+          <span class="tool-tag">DeepSeek</span>
           <span class="tool-tag">OpenAI Codex</span>
+          <span class="tool-tag">LangGraph</span>
           <span class="tool-tag">MCP</span>
           <span class="tool-tag">Cursor</span>
           <span class="tool-tag">GitHub Copilot</span>
+          <span class="tool-tag">CodeRabbit</span>
+          <span class="tool-tag">Qodo</span>
+          <span class="tool-tag">Tessl</span>
+          <span class="tool-tag">OpenCode</span>
         </div>
       </div>
 
@@ -268,6 +310,7 @@
           <div class="project-name">Architecture</div>
         </div>
         <div class="project-tools" style="margin-bottom: 0;">
+          <span class="tool-tag">Spec-Driven Design</span>
           <span class="tool-tag">Domain-Driven Design</span>
           <span class="tool-tag">TDD / RSpec</span>
           <span class="tool-tag">GraphQL</span>
@@ -320,6 +363,15 @@
     <h2 class="section-title">Latest articles</h2>
 
     <div class="writing-list">
+      <a href="https://medium.com/@igmarin/from-static-prompts-to-production-agents-my-journey-with-tessl-and-ai-skills-138521d880da" target="_blank"
+        class="writing-item">
+        <div class="writing-item-icon">✍️</div>
+        <div class="writing-item-content">
+          <div class="writing-item-title">From Static Prompts to Production Agents: My Journey with Tessl and AI Skills</div>
+          <div class="writing-item-meta">Published · medium.com/@igmarin</div>
+        </div>
+        <div class="writing-item-arrow">→</div>
+      </a>
       <a href="https://medium.com/@igmarin/your-json-column-is-not-a-settings-system-4b7dc46e747f" target="_blank"
         class="writing-item">
         <div class="writing-item-icon">✍️</div>
@@ -375,6 +427,13 @@
       Senior / Staff Engineer and AI Engineering roles.</p>
 
     <div class="connect-grid">
+      <a href="https://ismaelmarin.dev/" target="_blank" class="connect-card">
+        <div class="connect-card-icon">🌐</div>
+        <div>
+          <div class="connect-card-label">Website</div>
+          <div class="connect-card-value">ismaelmarin.dev</div>
+        </div>
+      </a>
       <a href="https://linkedin.com/in/ismaelmarin" target="_blank" class="connect-card">
         <div class="connect-card-icon">💼</div>
         <div>
@@ -410,11 +469,18 @@
           <div class="connect-card-value">AI Agent Skills & Workflows</div>
         </div>
       </a>
+      <a href="https://rubygems.org/gems/ruby-skill-bench" target="_blank" class="connect-card">
+        <div class="connect-card-icon">📊</div>
+        <div>
+          <div class="connect-card-label">Skill Bench</div>
+          <div class="connect-card-value">AI Evaluation Engine</div>
+        </div>
+      </a>
        <a href="https://rubygems.org/profiles/igmarin" target="_blank" class="connect-card">
         <div class="connect-card-icon">💎</div>
         <div>
           <div class="connect-card-label">RubyGems</div>
-          <div class="connect-card-value">rails-ai-bridge</div>
+          <div class="connect-card-value">rails-ai-bridge & more</div>
         </div>
       </a>
     </div>
