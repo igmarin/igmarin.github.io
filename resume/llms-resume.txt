@@ -12,8 +12,7 @@
 - **HTML Resume**: https://igmarin.github.io/resume/
 - **LinkedIn**: https://linkedin.com/in/ismaelmarin
 - **GitHub**: https://github.com/igmarin
-- **Scheduler**: https://cal.com/ismael-guillermo-marin-ot9aet
-
+- **Scheduler**: https://cal.com/ismael-marin/lets-talk
 ## Summary
 
 Tech Lead and Staff Software Engineer with 20 years of remote software development experience. Specialized in scaling enterprise Ruby on Rails monoliths, writing high-performance systems utilities in Rust, and constructing developer-centric Agentic AI integrations & Model Context Protocol (MCP) systems. Host of the syndicated bi-weekly AI radio segment and podcast "De Mentes Aumentadas."
