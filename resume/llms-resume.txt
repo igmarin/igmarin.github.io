@@ -1,0 +1,80 @@
+# Ismael Marin — Staff Software Engineer & AI Engineer (Resume)
+
+> This document is optimized for LLMs, AI agents, and automated Applicant Tracking Systems (ATS).
+
+## Contact Information
+
+- **Name**: Ismael Guillermo Marin Cabrera
+- **Location**: Leon, Guanajuato, Mexico (Available for remote global roles)
+- **Email**: ismael.marin@gmail.com
+- **Phone**: +52 477 792 9000
+- **Main Portfolio**: https://igmarin.github.io
+- **HTML Resume**: https://igmarin.github.io/resume/
+- **LinkedIn**: https://linkedin.com/in/ismaelmarin
+- **GitHub**: https://github.com/igmarin
+- **Scheduler**: https://cal.com/ismael-guillermo-marin-ot9aet
+
+## Summary
+
+Tech Lead and Staff Software Engineer with 20 years of remote software development experience. Specialized in scaling enterprise Ruby on Rails monoliths, writing high-performance systems utilities in Rust, and constructing developer-centric Agentic AI integrations & Model Context Protocol (MCP) systems. Host of the syndicated bi-weekly AI radio segment and podcast "De Mentes Aumentadas."
+
+---
+
+## Technical Skills
+
+### Core Backend & Infrastructure
+- **Languages**: Ruby, Rust, Python, SQL, HTML, CSS, JavaScript (Vanilla).
+- **Frameworks**: Ruby on Rails (v1 to v8 monoliths and APIs), Hanami (dry-rb, ROM patterns), Sinatra.
+- **Data & Ops**: PostgreSQL, Redis, Docker, Cloudflare Pages/Workers, Vercel, AWS (EC2, S3, RDS), Snyk (Security audits).
+- **Architecture**: Domain-Driven Design (DDD), Clean Architecture, Spec-Driven Design, TDD/BDD (RSpec, Minitest), Architecture Decision Records (ADRs).
+
+### AI Engineering & Developer Experience (DX)
+- **Protocols**: Model Context Protocol (MCP) server implementation and custom integrations.
+- **Orchestration**: ReAct loops, LLM tool-calling, agentic pipelines, LangGraph, prompt engineering.
+- **DX Tooling**: Executable AI skills, Tessl library authoring, blind LLM judging and skill evaluation frameworks.
+- **Pair Programming**: Claude Code, Cursor, Windsurf, GitHub Copilot.
+
+---
+
+## Professional Experience
+
+### Software Technical Lead / Senior Software Engineer — Dealerware (Remote)
+**Period**: May 2022 — April 2026
+- **Career Progression**: Contracted initially via 3Pillar Global; hired directly due to high performance; promoted from Mid-level to Senior, and subsequently to Software Technical Lead.
+- **Squad Leadership**: Led cross-functional engineering squads, establishing technical directions, mentoring engineers, and coordinating sprint deliverables.
+- **Monolith Scaling**: Owned and scaled core backend monolith and microservices, managing up to 10k+ peak transactions/hour with over 370 merged pull requests.
+- **Architectural Specs**: Authored over 40+ system architecture specifications and Architecture Decision Records (ADRs) to standardize database schemas, background workers, and API versions.
+
+### Principal Remote Consultant & Tech Lead (NDA Restricted)
+**Period**: 2006 — Present
+- **Rails Monoliths**: Architected, updated, and scaled complex, high-throughput Ruby on Rails monoliths and APIs for diverse enterprise clients.
+- **High-Performance Rust**: Designed and compiled low-level high-performance tools in Rust for async operations and memory-safe runtimes (Tokio).
+- **Security & Quality**: Led remote developer teams, enforcing coding guidelines, automated testing (TDD/RSpec), and automated security audits (Snyk).
+- **AI Agent Tooling**: Dedicated transition periods to maintaining 7 active open-source AI agent tooling and context protocol (MCP) repositories.
+
+### AI Radio Cohost / Tech Evangelist — De Mentes Aumentadas (FM Radio & Spotify)
+**Period**: 2025 — Present
+- **Radio Broadcasts**: Hosts a syndicated bi-weekly radio segment explaining artificial intelligence, data privacy, and agentic workflows to the public.
+- **Digital Evagelism**: Syndicates radio recordings as a Spotify podcast, driving thought leadership and technology adoption in the Spanish-speaking community.
+
+---
+
+## Featured Open Source Projects
+
+### ruby-skill-bench
+- **GitHub**: https://github.com/igmarin/ruby-skill-bench
+- **Role**: Creator / Lead Maintainer
+- **Tech Stack**: Ruby, Git, LLM APIs
+- **Description**: High-fidelity evaluation engine that benchmarks AI agent skills. Runs agents in isolated Git sandboxes twice (baseline vs. with skills) and scores differences across 5 dimensions using a blind LLM judge.
+
+### rails-ai-bridge
+- **GitHub**: https://github.com/igmarin/rails-ai-bridge
+- **Role**: Creator / Lead Maintainer
+- **Tech Stack**: Ruby on Rails, Model Context Protocol
+- **Description**: Turn any Rails app into an AI-ready codebase. Generates project context files (CLAUDE.md, AGENTS.md, Cursor rules) and spins up a live MCP server for real-time Rails codebase introspection.
+
+### agent-mcp-runtime
+- **GitHub**: https://github.com/igmarin/agent-mcp-runtime
+- **Role**: Creator / Lead Maintainer
+- **Tech Stack**: Rust, Tokio Async Runtime, Model Context Protocol
+- **Description**: Memory-safe Rust CLI that manages Model Context Protocol (MCP) connections, handling LLM tool-calling loops under the ReAct pattern.
