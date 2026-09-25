@@ -146,7 +146,7 @@
       <div class="hero-content">
         <div class="fade-in">
           <div class="hero-tag">Available for new opportunities</div>
-          <div class="hero-roles">Software Engineer &amp; Tech Lead · Ruby on Rails · Rust · AI Engineering · MCP</div>
+          <div class="hero-roles">Software Engineer &amp; Tech Lead · Ruby on Rails · Rust · Elixir/Phoenix · AI Engineering · MCP</div>
         </div>
         <div class="fade-in">
           <h1>Ismael<br><em>Marin</em></h1>
@@ -177,18 +177,19 @@
               <span class="dot dot-yellow"></span>
               <span class="dot dot-green"></span>
             </div>
-            <div class="terminal-title">ismael@dev:~</div>
+            <div class="terminal-title">ismael@portfolio:~</div>
           </div>
           <div class="terminal-body" id="terminal-body">
             <div id="terminal-history">
-              <div class="terminal-line"><span class="term-prompt">ismael@dev:~ $</span> <span class="term-input-sim">agent-mcp-runtime --info</span></div>
-              <div class="terminal-output">Agent MCP Runtime (Rust) v1.0.4
-Status: Connected to LLM (Claude-3.5)
-Connected servers: [rails-ai-bridge, filesystem-tools]
-Ready for instructions.</div>
+              <div class="terminal-line"><span class="term-prompt">ismael@portfolio:~ $</span> <span class="term-input-sim">about</span></div>
+              <div class="terminal-output">Ismael Marin · Software Engineer &amp; Tech Lead
+León, Guanajuato, Mexico
+Ruby on Rails · Rust · Elixir/Phoenix · Python · AI Engineering
+Open to full-time, part-time, and contract opportunities.
+Type 'help' to explore.</div>
             </div>
             <div class="terminal-line active-line" id="active-line">
-              <span class="term-prompt">ismael@dev:~ $</span>
+              <span class="term-prompt">ismael@portfolio:~ $</span>
               <span id="typed-text"></span>
               <span class="term-cursor"></span>
               <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal input">
@@ -197,8 +198,11 @@ Ready for instructions.</div>
           <div class="terminal-footer">
             <span class="term-hint">Quick commands:</span>
             <button class="term-btn" onclick="runTermCmd('help')">help</button>
+            <button class="term-btn" onclick="runTermCmd('about')">about</button>
             <button class="term-btn" onclick="runTermCmd('skills')">skills</button>
             <button class="term-btn" onclick="runTermCmd('projects')">projects</button>
+            <button class="term-btn" onclick="runTermCmd('resume')">resume</button>
+            <button class="term-btn" onclick="runTermCmd('contact')">contact</button>
             <button class="term-btn" onclick="runTermCmd('clear')">clear</button>
           </div>
         </div>
@@ -243,7 +247,6 @@ Ready for instructions.</div>
               ruby-skill-bench
             </a>
           </h3>
-          <span class="project-badge">Published on RubyGems</span>
         </div>
         <div class="project-learn-more">
           <a href="/ruby-skill-bench-site/" aria-label="Learn more about ruby-skill-bench">Learn more →</a>
@@ -251,9 +254,11 @@ Ready for instructions.</div>
         <p class="project-desc">
           An evaluation framework for measuring whether engineering skills and additional context improve AI-agent performance, using isolated runs, baseline-versus-context comparison, and blind judging.
         </p>
-        <p class="project-desc">
-          <a href="https://rubygems.org/gems/ruby-skill-bench" target="_blank">RubyGems recorded more than 3,000 total downloads</a> as of 2026-09-25 UTC.
-        </p>
+        <div class="project-download-proof">
+          <span class="project-download-source">RubyGems</span>
+          <a href="https://rubygems.org/gems/ruby-skill-bench" target="_blank" rel="noopener noreferrer">More than 3,000 total downloads</a>
+          <time datetime="2026-09-25">As of Sep 25, 2026 UTC</time>
+        </div>
         <ul class="project-features">
           <li>Side-by-Side Evaluation: Quantify the impact of specific context or skills on agent performance</li>
           <li>Isolated Git Sandboxes: Compare runs with clean diffs and repeatable setup</li>
@@ -278,7 +283,6 @@ Ready for instructions.</div>
               rails-ai-bridge
             </a>
           </h3>
-          <span class="project-badge">Published on RubyGems</span>
         </div>
         <div class="project-learn-more">
           <a href="/rails-ai-bridge-site/" aria-label="Learn more about rails-ai-bridge">Learn more →</a>
@@ -286,9 +290,11 @@ Ready for instructions.</div>
         <p class="project-desc">
           MCP and context infrastructure that lets AI coding assistants understand real Rails applications through generated project context and read-only introspection.
         </p>
-        <p class="project-desc">
-          <a href="https://rubygems.org/gems/rails-ai-bridge" target="_blank">RubyGems recorded more than 10,000 total downloads</a> as of 2026-09-25 UTC.
-        </p>
+        <div class="project-download-proof">
+          <span class="project-download-source">RubyGems</span>
+          <a href="https://rubygems.org/gems/rails-ai-bridge" target="_blank" rel="noopener noreferrer">More than 10,000 total downloads</a>
+          <time datetime="2026-09-25">As of Sep 25, 2026 UTC</time>
+        </div>
         <ul class="project-features">
           <li>Generates static context files for every AI tool — CLAUDE.md, AGENTS.md, .cursorrules,
             copilot-instructions.md, .windsurfrules, .mcp.json</li>
@@ -344,9 +350,92 @@ Ready for instructions.</div>
         </div>
       </div>
 
+      <div class="project-card glow-ai-hover">
+        <div class="project-header">
+          <h3 class="project-name">
+            <a href="https://github.com/igmarin/pi-vida" target="_blank" rel="noopener noreferrer">
+              pi-vida
+            </a>
+          </h3>
+          <span class="project-badge">Agent Launcher</span>
+        </div>
+        <p class="project-desc">
+          A launcher for Pi and other coding-agent hosts that loads language-specific skills, safety controls, and workflows for Ruby, Rust, Python, and Elixir.
+        </p>
+        <ul class="project-features">
+          <li>Choose a language profile and host from the target repository</li>
+          <li>Use solo, plan-build-review, or specialist-team workflows</li>
+          <li>Apply safety gates and checks before changes are made</li>
+        </ul>
+        <div class="project-code">
+          $ pi-vida ruby
+        </div>
+        <div class="project-tools">
+          <span class="tool-tag">Pi</span>
+          <span class="tool-tag">Agent Workflows</span>
+          <span class="tool-tag">Ruby</span>
+          <span class="tool-tag">Rust</span>
+        </div>
+      </div>
+
+      <div class="project-card glow-rust-hover">
+        <div class="project-header">
+          <h3 class="project-name">
+            <a href="https://github.com/igmarin/brigid" target="_blank" rel="noopener noreferrer">
+              brigid
+            </a>
+          </h3>
+          <span class="project-badge">Rust CLI</span>
+        </div>
+        <p class="project-desc">
+          A Rust CLI that turns a codebase into a multi-chapter Markdown tutorial with Mermaid diagrams, helping people understand an unfamiliar system.
+        </p>
+        <ul class="project-features">
+          <li>Maps abstractions and their relationships from source code</li>
+          <li>Generates setup, architecture, and chapter guides with real file paths</li>
+          <li>Checkpoints long runs and can resume or update changed sections</li>
+        </ul>
+        <div class="project-code">
+          $ cargo install brigid-cli
+        </div>
+        <div class="project-tools">
+          <span class="tool-tag">Rust</span>
+          <span class="tool-tag">LLM Tooling</span>
+          <span class="tool-tag">Developer Onboarding</span>
+        </div>
+      </div>
+
+      <div class="project-card glow-rust-hover">
+        <div class="project-header">
+          <h3 class="project-name">
+            <a href="https://github.com/nebulaideas/rs-guard" target="_blank" rel="noopener noreferrer">
+              rs-guard
+            </a>
+          </h3>
+          <span class="project-badge">AI Code Review CLI</span>
+        </div>
+        <p class="project-desc">
+          A Rust CLI for multi-provider AI reviews of GitHub pull requests, with a local pre-commit mode for reviewing changes before they are committed.
+        </p>
+        <ul class="project-features">
+          <li>Runs in GitHub Actions or locally with configurable project rules</li>
+          <li>Supports multiple hosted and local LLM providers</li>
+          <li>Exports per-run token, latency, and cost-estimate metrics</li>
+        </ul>
+        <div class="project-code">
+          $ cargo install rs-guard --locked
+        </div>
+        <div class="project-tools">
+          <span class="tool-tag">Rust</span>
+          <span class="tool-tag">GitHub Actions</span>
+          <span class="tool-tag">Code Review</span>
+          <span class="tool-tag">Pre-commit</span>
+        </div>
+      </div>
+
     </div>
 
-    <div class="section-label skills-section-label">Ruby, Ruby on Rails, Hanami & AI Planning Skills</div>
+    <div class="section-label skills-section-label">Skills · Ruby · Rust · Elixir/Phoenix · Hanami · AI planning</div>
 
     <div class="compact-projects-grid">
       <div class="compact-project-card glow-ai-hover">
@@ -421,6 +510,47 @@ Ready for instructions.</div>
         </div>
       </div>
 
+      <div class="compact-project-card glow-rust-hover">
+        <div class="compact-project-header">
+          <h3 class="project-name">
+            <a href="https://github.com/igmarin/rust-core-skills" target="_blank" rel="noopener noreferrer">
+              rust-core-skills
+            </a>
+          </h3>
+        </div>
+        <p class="project-desc">
+          Skills for idiomatic Rust development, covering ownership, type-driven design, error handling, project context, and Cargo TDD.
+        </p>
+        <code>npx skills add igmarin/rust-core-skills</code>
+        <br>
+        <div class="project-tools">
+          <span class="tool-tag">Rust</span>
+          <span class="tool-tag">Ownership</span>
+          <span class="tool-tag">Cargo TDD</span>
+        </div>
+      </div>
+
+      <div class="compact-project-card glow-ai-hover">
+        <div class="compact-project-header">
+          <h3 class="project-name">
+            <a href="https://github.com/igmarin/elixir-phoenix-skills" target="_blank" rel="noopener noreferrer">
+              elixir-phoenix-skills
+            </a>
+          </h3>
+        </div>
+        <p class="project-desc">
+          Skills and workflows for idiomatic Elixir and production Phoenix work, including LiveView, Ecto, OTP, testing, security, and deployment.
+        </p>
+        <code>npx skills add igmarin/elixir-phoenix-skills</code>
+        <br>
+        <div class="project-tools">
+          <span class="tool-tag">Elixir</span>
+          <span class="tool-tag">Phoenix</span>
+          <span class="tool-tag">LiveView</span>
+          <span class="tool-tag">Ecto</span>
+        </div>
+      </div>
+
       <div class="compact-project-card glow-ai-hover">
         <div class="compact-project-header">
           <h3 class="project-name">
@@ -460,6 +590,7 @@ Ready for instructions.</div>
         <div class="tech-stack-tags">
           <span class="tool-tag">Ruby on Rails</span>
           <span class="tool-tag">Rust</span>
+          <span class="tool-tag">Elixir/Phoenix</span>
           <span class="tool-tag">Python</span>
           <span class="tool-tag">PostgreSQL</span>
           <span class="tool-tag">Redis</span>
@@ -736,27 +867,38 @@ Ready for instructions.</div>
     <p>
       Built with HTML & CSS — no frameworks, no Jekyll, no dependencies.
       &nbsp;·&nbsp;
-      <a href="https://gitlab.com/igmarin/ismaelmarin">Source</a>
+      <a href="https://github.com/igmarin/igmarin.github.io">Source on GitHub</a>
     </p>
   </footer>
 
   <script>
     const terminalCommands = {
       help: `Available commands:
-  skills   - View Rails, Rust & AI skills
+  about    - Read a short professional overview
+  skills   - Browse language and framework skills
   projects - List featured open-source work
   podcast  - Learn about "De Mentes Aumentadas"
   resume   - View resume download links
   contact  - Get in touch / booking link
   clear    - Clear the terminal screen`,
 
-      skills: `[Core Skills]
-  - Ruby on Rails (deepest production ecosystem)
-  - Systems Programming (Safe Rust, async CLI tools)
-  - Agentic AI Engineering (MCP server design, ReAct loops)
-  - Architecture: DDD, clean architecture, ADR specs`,
+      about: `[About]
+Ismael Marin · Software Engineer & Tech Lead
+Based in León, Guanajuato, Mexico; working remotely with U.S. and Latin American teams.
+Builds backend systems, SaaS products, integrations, and developer tools.
+Open to full-time, part-time, and contract opportunities.`,
+
+      skills: `[Skill Libraries]
+  - rails-agent-skills / ruby-core-skills: Rails and Ruby development
+  - rust-core-skills: ownership, type-driven design, error handling, Cargo TDD
+  - hanakai-yaku: Hanami development with TDD and DDD
+  - elixir-phoenix-skills: Phoenix, LiveView, and Ecto
+  - agnostic-planning-skills: project planning and estimation`,
 
       projects: `[Featured Projects]
+  - pi-vida: Language-specific skills, safety, and agent workflows
+  - brigid: Rust CLI for codebase tutorials and architecture guides
+  - rs-guard: Rust CLI for multi-provider pull request reviews
   - ruby-skill-bench: AI skill evaluation engine
   - rails-ai-bridge: Context bridge & live MCP server
   - agent-mcp-runtime: Safe Rust CLI for MCP agent loops`,
@@ -809,7 +951,12 @@ Ready for instructions.</div>
       // Add command to history
       const cmdLine = document.createElement('div');
       cmdLine.className = 'terminal-line';
-      cmdLine.innerHTML = `<span class="term-prompt">ismael@dev:~ $</span> <span>${cmd}</span>`;
+      const prompt = document.createElement('span');
+      prompt.className = 'term-prompt';
+      prompt.textContent = 'ismael@portfolio:~ $';
+      const enteredCommand = document.createElement('span');
+      enteredCommand.textContent = cmd;
+      cmdLine.append(prompt, ' ', enteredCommand);
       history.appendChild(cmdLine);
 
       if (sanitizedCmd === 'clear') {
