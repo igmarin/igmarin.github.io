@@ -1,79 +1,97 @@
-# Ismael Marin — Staff Software Engineer & AI Engineer (Resume)
+# Ismael Marin
 
-> This document is optimized for LLMs, AI agents, and automated Applicant Tracking Systems (ATS).
+**Software Engineer & Tech Lead**  
+Ruby on Rails · Rust · AI Engineering · Backend Architecture · MCP
 
-## Contact Information
+León, Guanajuato, Mexico · Remote
 
-- **Name**: Ismael Guillermo Marin Cabrera
-- **Location**: Leon, Guanajuato, Mexico (Available for remote global roles)
-- **Email**: ismael.marin@gmail.com
-- **Phone**: +52 477 792 9000
-- **Main Portfolio**: https://igmarin.github.io
-- **HTML Resume**: https://igmarin.github.io/resume/
-- **LinkedIn**: https://linkedin.com/in/ismaelmarin
-- **GitHub**: https://github.com/igmarin
-- **Scheduler**: https://cal.com/ismael-marin/lets-talk
-## Summary
+- Email: ismael.marin@gmail.com
+- Phone: +52 477 792 9000
+- Main portfolio: https://ismaelmarin.dev
+- GitHub Pages bridge: https://igmarin.github.io
+- HTML résumé: https://igmarin.github.io/resume/
+- PDF résumé: https://igmarin.github.io/resume/ismael-marin-resume.pdf
+- LinkedIn: https://linkedin.com/in/ismaelmarin
+- GitHub: https://github.com/igmarin
+- Writing: https://medium.com/@igmarin
+- Booking: https://cal.com/ismael-marin/lets-talk
 
-Tech Lead and Staff Software Engineer with 20 years of remote software development experience. Specialized in scaling enterprise Ruby on Rails monoliths, writing high-performance systems utilities in Rust, and constructing developer-centric Agentic AI integrations & Model Context Protocol (MCP) systems. Host of the syndicated bi-weekly AI radio segment and podcast "De Mentes Aumentadas."
+## Professional Summary
 
----
+Software engineer and technical leader with deep experience building backend systems, SaaS products, integrations, and engineering teams for U.S. and Latin American companies. Ruby on Rails is my deepest production ecosystem, while I now work regularly with Rust, Elixir/Phoenix, and Python, particularly around developer infrastructure and AI systems. I approach AI as a software engineering problem: clear specifications, useful context, tests, guardrails, and evals. I have worked remotely throughout my career and remain hands-on with architecture and implementation.
 
-## Technical Skills
+## Core Skills
 
-### Core Backend & Infrastructure
-- **Languages**: Ruby, Rust, Python, SQL, HTML, CSS, JavaScript (Vanilla).
-- **Frameworks**: Ruby on Rails (v1 to v8 monoliths and APIs), Hanami (dry-rb, ROM patterns), Sinatra.
-- **Data & Ops**: PostgreSQL, Redis, Docker, Cloudflare Pages/Workers, Vercel, AWS (EC2, S3, RDS), Snyk (Security audits).
-- **Architecture**: Domain-Driven Design (DDD), Clean Architecture, Spec-Driven Design, TDD/BDD (RSpec, Minitest), Architecture Decision Records (ADRs).
-
-### AI Engineering & Developer Experience (DX)
-- **Protocols**: Model Context Protocol (MCP) server implementation and custom integrations.
-- **Orchestration**: ReAct loops, LLM tool-calling, agentic pipelines, LangGraph, prompt engineering.
-- **DX Tooling**: Executable AI skills, Tessl library authoring, blind LLM judging and skill evaluation frameworks.
-- **Pair Programming**: Claude Code, Cursor, Windsurf, GitHub Copilot.
-
----
+- **Software engineering:** Ruby on Rails, Rust, Elixir/Phoenix, Python, PostgreSQL, Redis, Sidekiq, REST APIs, OpenSearch, AWS, Docker.
+- **Architecture and systems:** Software architecture, distributed systems, DDD, hexagonal architecture, monolith design, API design, TDD, BDD, SOLID.
+- **AI engineering:** MCP, LLM integration, AI agents, evals, context engineering, guardrails, RAG, multi-provider LLM systems, local models.
+- **Leadership and product:** Technical leadership, engineering management, product strategy, technical discovery, MVP development, mentoring, ADRs/RFCs.
 
 ## Professional Experience
 
-### Software Technical Lead / Senior Software Engineer — Dealerware (Remote)
-**Period**: May 2022 — April 2026
-- **Career Progression**: Contracted initially via 3Pillar Global; hired directly due to high performance; promoted from Mid-level to Senior, and subsequently to Software Technical Lead.
-- **Squad Leadership**: Led cross-functional engineering squads, establishing technical directions, mentoring engineers, and coordinating sprint deliverables.
-- **Monolith Scaling**: Owned and scaled core backend monolith and microservices, managing up to 10k+ peak transactions/hour with over 370 merged pull requests.
-- **Architectural Specs**: Authored over 40+ system architecture specifications and Architecture Decision Records (ADRs) to standardize database schemas, background workers, and API versions.
+### Nebula Ideas — Head of Strategy / Technical Advisor
+**2010–Present · Remote · Mexico / United States**
 
-### Principal Remote Consultant & Tech Lead (NDA Restricted)
-**Period**: 2006 — Present
-- **Rails Monoliths**: Architected, updated, and scaled complex, high-throughput Ruby on Rails monoliths and APIs for diverse enterprise clients.
-- **High-Performance Rust**: Designed and compiled low-level high-performance tools in Rust for async operations and memory-safe runtimes (Tokio).
-- **Security & Quality**: Led remote developer teams, enforcing coding guidelines, automated testing (TDD/RSpec), and automated security audits (Snyk).
-- **AI Agent Tooling**: Dedicated transition periods to maintaining 7 active open-source AI agent tooling and context protocol (MCP) repositories.
+- Advise startups and product teams on architecture, backend modernization, AI adoption, technical strategy, and product development while remaining hands-on with implementation.
+- Build and modernize Ruby on Rails products, infrastructure, APIs, and e-commerce systems; help founders define MVP scope, technical priorities, and architecture appropriate to product stage.
+- Apply a pragmatic architecture approach: strong boundaries where complexity requires them, and simpler designs where speed, cost, and learning matter more.
+- Develop AI engineering and developer tooling across Ruby, Rust, Elixir, and Python.
 
-### AI Radio Cohost / Tech Evangelist — De Mentes Aumentadas (FM Radio & Spotify)
-**Period**: 2025 — Present
-- **Radio Broadcasts**: Hosts a syndicated bi-weekly radio segment explaining artificial intelligence, data privacy, and agentic workflows to the public.
-- **Digital Evagelism**: Syndicates radio recordings as a Spotify podcast, driving thought leadership and technology adoption in the Spanish-speaking community.
+### Dealerware — Software Engineer → Senior Software Engineer → Tech Lead
+**May 2022–April 2026 · Remote · U.S. SaaS**
 
----
+- Promoted from Software Engineer to Senior Software Engineer and then Tech Lead while remaining an active contributor across a large Rails ecosystem.
+- Led technical work for an integrations-focused team, collaborating with backend engineers, QA, DevOps, product, and external partners.
+- Worked on distributed systems processing approximately 10,000 telematics events per minute and on integrations supporting vehicle lifecycle and daily operational workflows.
+- Architected and implemented Auth0-based enterprise identity and SSO integrations, plus role-aware analytics integrations with Databricks and ThoughtSpot.
+- Led a zero-downtime Elasticsearch-to-OpenSearch migration that materially reduced infrastructure cost while preserving production availability.
+- Redesigned legacy vehicle classification logic to support multiple manufacturers, VIN-derived trim validation, and richer vehicle classification.
+- Authored 40+ ADRs/RFCs and contributed 370+ merged pull requests across 20+ production repositories.
 
-## Featured Open Source Projects
+### 3Pillar Global — Lead Software Engineer
+**September 2020–October 2021 · Remote**
 
-### ruby-skill-bench
-- **GitHub**: https://github.com/igmarin/ruby-skill-bench
-- **Role**: Creator / Lead Maintainer
-- **Tech Stack**: Ruby, Git, LLM APIs
-- **Description**: High-fidelity evaluation engine that benchmarks AI agent skills. Runs agents in isolated Git sandboxes twice (baseline vs. with skills) and scores differences across 5 dimensions using a blind LLM judge.
+- Designed an end-to-end internationalization architecture spanning backend, frontend, and third-party integrations.
+- Modernized legacy Rails systems using clearer domain boundaries, service objects, and automated testing; worked on REST APIs and performance-sensitive distributed services, including Go components.
 
-### rails-ai-bridge
-- **GitHub**: https://github.com/igmarin/rails-ai-bridge
-- **Role**: Creator / Lead Maintainer
-- **Tech Stack**: Ruby on Rails, Model Context Protocol
-- **Description**: Turn any Rails app into an AI-ready codebase. Generates project context files (CLAUDE.md, AGENTS.md, Cursor rules) and spins up a live MCP server for real-time Rails codebase introspection.
+### United Virtualities — Lead Software Engineer
+**August 2019–August 2020 · Remote**
 
-### agent-mcp-runtime
-- **GitHub**: https://github.com/igmarin/agent-mcp-runtime
-- **Role**: Creator / Lead Maintainer
-- **Tech Stack**: Rust, Tokio Async Runtime, Model Context Protocol
-- **Description**: Memory-safe Rust CLI that manages Model Context Protocol (MCP) connections, handling LLM tool-calling loops under the ReAct pattern.
+- Led projects from technical discovery and architecture through implementation and AWS production deployment across e-commerce, startup MVP, and web application engagements.
+- Served as technical lead and client-facing engineering contact, balancing architecture, delivery timelines, budgets, and evolving requirements.
+
+### Reservamos / reserhub — Tech Lead, B2B
+**August 2018–August 2019 · Remote**
+
+- Helped create and grow the B2B product area and designed integrations between enterprise transportation partners and the Reservamos platform.
+- Led cross-functional delivery of white-label products and partner integrations, working directly with customer technology teams on APIs and implementation approaches.
+
+### MagmaLabs — Staff Engineering Manager / Lead Engineer
+**February 2016–August 2018 · Remote**
+
+- Progressed through three leadership levels; oversaw delivery across customer projects through Engineering Managers / Project Managers and acted as an escalation point for delivery and customer concerns.
+- Coordinated with Sales when technical work exposed expansion opportunities and led engineering work across Rails e-commerce systems, Spree/Solidus, payments, subscriptions, and international checkout workflows.
+- Helped run the Hacker Academy mentoring program for 30+ early-career engineers and owned hiring, mentoring, 1:1s, career development, and engineering quality across teams.
+
+## Open Source & AI Engineering
+
+- **rails-ai-bridge (Ruby):** MCP and context infrastructure that lets AI coding assistants understand real Rails applications through generated project context and read-only introspection. https://github.com/igmarin/rails-ai-bridge
+- **ruby-skill-bench (Ruby):** Evaluation framework for measuring whether engineering skills and additional context improve AI-agent performance using isolated runs, baseline-versus-context comparison, and blind judging. https://github.com/igmarin/ruby-skill-bench
+- **rails-agent-skills / ruby-core-skills:** Engineering skill libraries covering Rails, Ruby, testing, refactoring, architecture, security, and development practices for coding agents.
+- **Rust tooling:** Projects such as [rs-guard](https://github.com/nebulaideas/rs-guard) and other developer-infrastructure experiments focused on local/CI execution, agent workflows, persistent context, and memory-safe CLI systems.
+- **Elixir/Phoenix:** Engineering skill collection covering Phoenix, LiveView, Ecto, architecture, and agent-assisted development.
+
+## Mentoring & Engineering Development
+
+- The Hybrid Group: mentored engineers transitioning into Ruby development and progressing toward senior-level responsibilities through code review, technical guidance, and structured growth.
+- MagmaLabs Hacker Academy: helped guide a cohort of 30+ recent graduates and early-career developers, with selected participants moving into full-time engineering roles.
+
+## Education & Languages
+
+- Graduate Studies in Information Technology — ITESO, Jesuit University of Guadalajara · 2005–2007
+- B.S. Information Technology & Business Administration — UNIVER León · 2002–2005
+- Spanish (Native) · English (C1 professional proficiency)
+
+## Technical Writing & Public Communication
+
+Technical writer on software architecture and AI engineering at medium.com/@igmarin; regular contributor on AI adoption and its limits for Radio Fórmula.
