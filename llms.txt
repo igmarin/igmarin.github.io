@@ -30,8 +30,11 @@ Advise startups and product teams on architecture, backend modernization, AI ado
 - **rails-ai-bridge:** MCP and context infrastructure that helps AI coding assistants understand Rails applications through generated project context and read-only introspection. RubyGems recorded more than 10,000 total downloads as of 2026-09-25 UTC. https://github.com/igmarin/rails-ai-bridge
 - **ruby-skill-bench:** Evaluates whether engineering skills and context improve AI-agent performance through isolated runs, baseline-versus-context comparison, and blind judging. RubyGems recorded more than 3,000 total downloads as of 2026-09-25 UTC. https://github.com/igmarin/ruby-skill-bench
 - **rails-agent-skills / ruby-core-skills:** Engineering skill libraries for Rails and Ruby development.
-- **Rust tooling:** Projects including rs-guard, focused on local and CI execution, agent workflows, persistent context, and memory-safe CLI systems.
-- **Elixir/Phoenix skills:** Engineering guidance for Phoenix, LiveView, Ecto, architecture, and agent-assisted development.
+- **brigid:** A Rust CLI that turns a codebase into a multi-chapter Markdown tutorial with Mermaid diagrams, setup guidance, and an architecture overview. https://github.com/igmarin/brigid
+- **rs-guard:** A Rust CLI for multi-provider AI reviews of GitHub pull requests, with local pre-commit mode and per-run metrics. https://github.com/nebulaideas/rs-guard
+- **pi-vida:** A launcher for Pi and other coding-agent hosts that loads language-specific skills, safety controls, and workflows. https://github.com/igmarin/pi-vida
+- **Rust skills:** [rust-core-skills](https://github.com/igmarin/rust-core-skills) covers ownership, type-driven design, error handling, project context, and Cargo TDD.
+- **Elixir/Phoenix skills:** [elixir-phoenix-skills](https://github.com/igmarin/elixir-phoenix-skills) provides guidance for idiomatic Elixir, Phoenix, LiveView, Ecto, OTP, testing, security, and deployment.
 
 ## Technical focus
 
