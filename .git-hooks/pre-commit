@@ -19,7 +19,16 @@ echo "🔍 Checking for whitespace and conflict markers..."
 # below, so on a non-English locale the match would silently never fire and
 # unresolved merge markers would pass. Marker detection itself is not localized
 # — only the message is — so pinning the locale fully closes the gap.
-check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || true
+check_exit=0
+check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
+# If git itself failed (e.g. "not a git repository"), stderr is in check_output
+# but the message is not a whitespace finding.  Only parse when git succeeded
+# or returned 1 (the "findings found" exit code from --check).
+if [ "$check_exit" -gt 1 ]; then
+  echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
+  printf '%s\n' "$check_output" >&2
+  check_output=""
+fi
 # `git diff --check` already reports real conflicts as "leftover conflict
 # marker". Key off that instead of grepping the diff for the markers themselves:
 # a bare "=======" also matches legitimate content such as a Markdown setext
@@ -45,8 +54,12 @@ echo "============================================="
 # 2. Advisory AI review of the staged changes. The review script is advisory by
 #    contract and always exits 0, so `|| true` is a safety net that keeps a
 #    future bug in the review from ever blocking a commit.
-if [ -x "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
-  "$REPO_ROOT/hooks/pre-commit-open-code-review" || true
+if [ -f "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
+  if [ -x "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
+    "$REPO_ROOT/hooks/pre-commit-open-code-review" || echo "[open-code-review] review hook exited $? (ignored)." >&2
+  else
+    echo "[open-code-review] hooks/pre-commit-open-code-review is not executable — skipping (run: chmod +x)." >&2
+  fi
 else
   echo "[open-code-review] hooks/pre-commit-open-code-review not found — skipping." >&2
 fi
