@@ -24,7 +24,7 @@ check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
 # If git itself failed (e.g. "not a git repository"), stderr is in check_output
 # but the message is not a whitespace finding.  Only parse when git succeeded
 # or returned 1 (the "findings found" exit code from --check).
-if [ "$check_exit" -gt 1 ]; then
+if [ "$check_exit" -gt 2 ]; then
   echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
   printf '%s\n' "$check_output" >&2
   check_output=""
