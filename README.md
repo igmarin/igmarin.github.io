@@ -29,7 +29,7 @@ GitHub Pages publishes the root of `master` at [igmarin.github.io](https://igmar
 
 ## Code review
 
-Pull requests get an automatic OpenCodeReview pass (DeepSeek `deepseek-v4-flash`, medium effort) from [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml).
+Pull requests get an automatic OpenCodeReview pass (DeepSeek `deepseek-flash`, medium effort) from [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml).
 
 The same review runs locally on every commit. Enable it once per clone:
 

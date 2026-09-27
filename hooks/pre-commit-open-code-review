@@ -7,7 +7,7 @@
 #
 # Environment (all optional):
 #   OCR_LLM_URL                 LLM endpoint    (default: https://api.deepseek.com)
-#   OCR_LLM_MODEL               model id        (default: deepseek-flash)
+#   OCR_LLM_MODEL               model id        (default: deepseek-v4-flash)
 #   OCR_LLM_TOKEN               API token       (default: $DEEPSEEK_API_KEY)
 #   OCR_REVIEW_TIMEOUT_SECONDS  wall-clock limit (default: 600)
 #   OCR_REVIEW_EFFORT           low|medium|high  (default: medium)
@@ -75,19 +75,20 @@ if git diff --cached --quiet 2>/dev/null; then
   exit 0
 fi
 
-# During a rebase or merge, refusing to continue is correct; this is the one
-# case where the hook is allowed to stop the commit. The caller
-# (.git-hooks/pre-commit) checks the exit status before applying its own
-# advisory `|| true`, so a non-zero status here does block the commit.
+# Mid-rebase/merge/cherry-pick: skip the review but DO NOT block. These state
+# entries are still present while the concluding commit is being created, so
+# exiting non-zero here would reject `git rebase --continue`, the commit that
+# concludes a merge, and `git cherry-pick` — a catch-22 that can only be escaped
+# with --no-verify. This hook is advisory, so it always exits 0.
 for state_dir in rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD; do
   if [[ -e "$(git rev-parse --git-path "$state_dir")" ]]; then
-    warn "Repository is mid-${state_dir}; resolve it before committing."
-    exit 1
+    log "Repository is mid-${state_dir} — skipping review (commit still allowed)."
+    exit 0
   fi
 done
 
 export OCR_LLM_URL="${OCR_LLM_URL:-https://api.deepseek.com}"
-export OCR_LLM_MODEL="${OCR_LLM_MODEL:-deepseek-flash}"
+export OCR_LLM_MODEL="${OCR_LLM_MODEL:-deepseek-v4-flash}"
 export OCR_LLM_TOKEN="${OCR_LLM_TOKEN:-$DEEPSEEK_API_KEY}"
 EFFORT="${OCR_REVIEW_EFFORT:-medium}"
 TIMEOUT_SECONDS="${OCR_REVIEW_TIMEOUT_SECONDS:-600}"
@@ -133,17 +134,24 @@ run_review() {
     # `perl -e 'alarm shift; exec @ARGV'` cannot be used: it signals the wrapper
     # (printing "Alarm clock" and yielding 142) without ever killing the real
     # `ocr` process, which then keeps running after the hook has exited.
+    # The child sets no alarm of its own — an alarm survives execve, so it would
+    # kill `ocr` by SIGALRM just before the parent's deadline and make a timeout
+    # look like success. stderr is left attached so real failures stay visible.
     perl -e '
       my $t = shift @ARGV;
       my $pid = fork(); die "fork: $!" unless defined $pid;
-      if (!$pid) { alarm $t; exec @ARGV or exit 127; }
+      if (!$pid) { exec @ARGV or exit 127; }
       my $deadline = time + $t;
       while (1) {
-        return exit($? >> 8) if waitpid($pid, 1) == $pid;
+        if (waitpid($pid, 1) == $pid) {
+          # Signal deaths must not decode to success: report 128 + signal.
+          my $st = $?;
+          exit($st & 127 ? 128 + ($st & 127) : $st >> 8);
+        }
         if (time >= $deadline) { kill "KILL", $pid; waitpid($pid, 0); exit 142; }
         select(undef, undef, undef, 0.2);
       }
-    ' "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" 2>/dev/null
+    ' "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}"
   else
     warn "Neither 'timeout' nor 'perl' available — running without a time limit."
     ocr "${REVIEW_ARGS[@]}"
