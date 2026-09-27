@@ -15,7 +15,11 @@ echo "============================================="
 #    (resume/llms-resume.txt), so blocking on all of its output would reject
 #    valid edits — while letting unresolved merge markers through is far worse.
 echo "🔍 Checking for whitespace and conflict markers..."
-check_output="$(git diff --cached --check 2>&1)" || true
+# LC_ALL=C is load-bearing: git localizes the "leftover conflict marker" string
+# below, so on a non-English locale the match would silently never fire and
+# unresolved merge markers would pass. Marker detection itself is not localized
+# — only the message is — so pinning the locale fully closes the gap.
+check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || true
 # `git diff --check` already reports real conflicts as "leftover conflict
 # marker". Key off that instead of grepping the diff for the markers themselves:
 # a bare "=======" also matches legitimate content such as a Markdown setext
