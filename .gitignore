@@ -1,6 +1,2 @@
 .DS_Store
 node_modules/*
-
-# OpenCodeReview local artifacts
-.opencodereview/
-review-result.txt

@@ -21,9 +21,11 @@ echo "🔍 Checking for whitespace and conflict markers..."
 # — only the message is — so pinning the locale fully closes the gap.
 check_exit=0
 check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
-# If git itself failed (e.g. "not a git repository"), stderr is in check_output
-# but the message is not a whitespace finding.  Only parse when git succeeded
-# or returned 1 (the "findings found" exit code from --check).
+# Verified empirically (git 2.55): `git diff --check` exits 0 when clean and 2
+# when it finds whitespace errors or conflict markers.  Genuine git failures
+# (bad usage, not a repository) exit >= 128, e.g. 129.  So `> 2` correctly
+# separates "findings worth parsing" from "git itself failed" — using `>= 2`
+# here would discard every real finding and silently defeat the conflict gate.
 if [ "$check_exit" -gt 2 ]; then
   echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
   printf '%s\n' "$check_output" >&2
