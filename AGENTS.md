@@ -30,3 +30,24 @@ The PDF is a supplied CV artifact. Check its content and provenance before repla
 ## Review before publishing
 
 Preview from the repository root with `python3 -m http.server 8000`. Inspect the changed page at desktop and mobile widths, follow the affected links, and check that JSON-LD remains valid when edited. Run `git diff --check` to catch whitespace errors. There is no automated test suite in this repository; use checks that match the change.
+
+## Code review
+
+OpenCodeReview (Alibaba) runs automatically on pull requests to `master` via [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml). It uses DeepSeek (`deepseek-v4-flash`, medium effort) and the `DEEPSEEK_API_KEY` repository secret. Set `GH_PAT` to a bot PAT with **Pull requests: Read and write** for inline comments and the sticky summary; otherwise the workflow falls back to `GITHUB_TOKEN`.
+
+The same review runs locally on every commit as an advisory step through [`.git-hooks/pre-commit`](.git-hooks/pre-commit), which delegates to [`hooks/pre-commit-open-code-review`](hooks/pre-commit-open-code-review). It never blocks a commit.
+
+Enable the local hook once per clone:
+
+```sh
+git config core.hooksPath .git-hooks
+```
+
+Install the CLI and export your key if it is not already in your shell profile:
+
+```sh
+npm install --global @alibaba-group/open-code-review@1.12.9
+export DEEPSEEK_API_KEY=sk-...
+```
+
+The hook is advisory and self-disabling: it skips when the CLI or key is missing, and you can bypass it per commit with `OCR_SKIP_REVIEW=1 git commit ...`. Tune it with `OCR_REVIEW_EFFORT` (`low|medium|high`) and `OCR_REVIEW_TIMEOUT_SECONDS` (default 600).

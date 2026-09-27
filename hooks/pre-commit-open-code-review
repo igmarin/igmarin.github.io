@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# Advisory OpenCodeReview pre-commit hook.
+# Reviews staged changes locally; it never blocks a commit.
+#
+# Environment (all optional):
+#   OCR_LLM_URL                 LLM endpoint       (default: https://api.deepseek.com)
+#   OCR_LLM_MODEL               model id           (default: deepseek-v4-flash)
+#   OCR_LLM_TOKEN / DEEPSEEK_API_KEY   API token   (required to run)
+#   OCR_REVIEW_TIMEOUT_SECONDS   wall-clock limit   (default: 600)
+#   OCR_REVIEW_EFFORT           low|medium|high    (default: medium)
+#   OCR_SKIP_REVIEW=1           bypass the review entirely
+set -euo pipefail
+
+if [[ "${OCR_SKIP_REVIEW:-0}" == "1" ]]; then
+  echo "[open-code-review] OCR_SKIP_REVIEW=1 — skipping staged review."
+  exit 0
+fi
+
+if ! command -v ocr >/dev/null 2>&1; then
+  echo "[open-code-review] ocr not found — skipping staged review."
+  echo "[open-code-review] Install with: npm install --global @alibaba-group/open-code-review@1.12.9"
+  exit 0
+fi
+
+# Git does not source shell rc files, so recover the token from the profile when
+# the parent environment does not already carry it. Uses POSIX BRE quantifiers
+# ({n,}) because BSD sed on macOS does not support GNU's \+ and ++.
+if [[ -z "${OCR_LLM_TOKEN:-${DEEPSEEK_API_KEY:-}}" ]]; then
+  for rc in "${ZDOTDIR:-$HOME}/.zshenv" "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.profile" "$HOME/.bash_profile"; do
+    [[ -r "$rc" ]] || continue
+    DEEPSEEK_API_KEY="$(sed -n \
+      -e 's/^[[:space:]]*export[[:space:]]\{1,\}DEEPSEEK_API_KEY=//p' \
+      -e 's/^[[:space:]]*DEEPSEEK_API_KEY=//p' \
+      "$rc" | tail -n 1 | sed -e 's/^["'\'']//' -e 's/["'\'']$//')"
+    if [[ -n "$DEEPSEEK_API_KEY" ]]; then
+      break
+    fi
+  done
+  export DEEPSEEK_API_KEY="${DEEPSEEK_API_KEY:-}"
+fi
+
+if [[ -z "${OCR_LLM_TOKEN:-${DEEPSEEK_API_KEY:-}}" ]]; then
+  echo "[open-code-review] No OCR LLM token found — skipping staged review."
+  echo "[open-code-review] Set OCR_LLM_TOKEN (or DEEPSEEK_API_KEY)."
+  exit 0
+fi
+
+if git diff --cached --quiet; then
+  exit 0
+fi
+
+export OCR_LLM_URL="${OCR_LLM_URL:-https://api.deepseek.com}"
+export OCR_LLM_MODEL="${OCR_LLM_MODEL:-deepseek-v4-flash}"
+export OCR_LLM_TOKEN="${OCR_LLM_TOKEN:-$DEEPSEEK_API_KEY}"
+EFFORT="${OCR_REVIEW_EFFORT:-medium}"
+
+OUTPUT_FILE="$(mktemp "${TMPDIR:-/tmp}/open-code-review-staged.XXXXXX")"
+chmod 600 "$OUTPUT_FILE"
+trap 'rm -f "$OUTPUT_FILE"' EXIT
+
+REVIEW_ARGS=(review --effort "$EFFORT" --format json --output "$OUTPUT_FILE")
+TIMEOUT_SECONDS="${OCR_REVIEW_TIMEOUT_SECONDS:-600}"
+
+echo "[open-code-review] Reviewing staged changes (model=$OCR_LLM_MODEL, effort=$EFFORT, timeout=${TIMEOUT_SECONDS}s)..."
+REVIEW_STATUS=0
+if command -v timeout >/dev/null 2>&1; then
+  timeout "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" || REVIEW_STATUS=$?
+else
+  # macOS does not ship GNU timeout; Perl's alarm provides the same fail-fast behavior.
+  perl -e 'alarm shift; exec @ARGV' "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" || REVIEW_STATUS=$?
+fi
+
+if [[ -s "$OUTPUT_FILE" ]]; then
+  echo "[open-code-review] Review findings:"
+  cat "$OUTPUT_FILE"
+fi
+
+if [[ "$REVIEW_STATUS" -ne 0 ]]; then
+  echo "[open-code-review] Review did not complete (exit $REVIEW_STATUS); commit proceeds." >&2
+else
+  echo "[open-code-review] Review complete. Commit proceeding."
+fi
