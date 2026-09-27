@@ -20,6 +20,7 @@ echo "🔍 Checking for whitespace and conflict markers..."
 # unresolved merge markers would pass. Marker detection itself is not localized
 # — only the message is — so pinning the locale fully closes the gap.
 check_exit=0
+check_skipped=0
 check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
 # Verified empirically (git 2.55): `git diff --check` exits 0 when clean and 2
 # when it finds whitespace errors or conflict markers.  Genuine git failures
@@ -30,6 +31,7 @@ if [ "$check_exit" -gt 2 ]; then
   echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
   printf '%s\n' "$check_output" >&2
   check_output=""
+  check_skipped=1
 fi
 # `git diff --check` already reports real conflicts as "leftover conflict
 # marker". Key off that instead of grepping the diff for the markers themselves:
@@ -40,7 +42,9 @@ if printf '%s\n' "$check_output" | grep -q 'leftover conflict marker'; then
   printf '%s\n' "$check_output" | grep 'leftover conflict marker' >&2
   exit 1
 fi
-if [ -n "$check_output" ]; then
+if [ "$check_skipped" -eq 1 ]; then
+  echo "⏭️  Whitespace/conflict check skipped (git diff --check did not run)."
+elif [ -n "$check_output" ]; then
   # Whitespace stays advisory: this repository uses a trailing double-space as
   # a Markdown hard line break (resume/llms-resume.txt).
   echo "⚠️  Whitespace errors found (advisory — commit proceeds):" >&2
