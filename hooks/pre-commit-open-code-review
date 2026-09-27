@@ -76,10 +76,12 @@ if git diff --cached --quiet 2>/dev/null; then
 fi
 
 # During a rebase or merge, refusing to continue is correct; this is the one
-# case where the hook is allowed to stop the commit.
+# case where the hook is allowed to stop the commit. The caller
+# (.git-hooks/pre-commit) checks the exit status before applying its own
+# advisory `|| true`, so a non-zero status here does block the commit.
 for state_dir in rebase-merge rebase-apply MERGE_HEAD CHERRY_PICK_HEAD; do
   if [[ -e "$(git rev-parse --git-path "$state_dir")" ]]; then
-    warn "Repository is mid-${state_dir}; refusing to review mid-operation."
+    warn "Repository is mid-${state_dir}; resolve it before committing."
     exit 1
   fi
 done
@@ -99,23 +101,63 @@ if [[ -z "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
 fi
 chmod 700 "$WORK_DIR" 2>/dev/null
 OUTPUT_FILE="$WORK_DIR/result.json"
-# Install the trap before anything else can fail so cleanup is always guaranteed.
-trap 'rm -rf "$WORK_DIR"' EXIT INT TERM
 
 REVIEW_ARGS=(review --effort "$EFFORT" --format json --output "$OUTPUT_FILE")
 
 log "Reviewing staged changes (model=$OCR_LLM_MODEL, effort=$EFFORT, timeout=${TIMEOUT_SECONDS}s)..."
 
+# Run the review in the background so an interrupt can reap the child; without
+# this the orphaned `ocr` process can outlive the hook and keep writing.
+OCR_PID=""
+cleanup() { rm -rf "$WORK_DIR"; }
+on_signal() {
+  local code="$1"
+  trap - EXIT INT TERM
+  if [[ -n "$OCR_PID" ]] && kill -0 "$OCR_PID" 2>/dev/null; then
+    kill -TERM "-$OCR_PID" 2>/dev/null || kill -TERM "$OCR_PID" 2>/dev/null
+  fi
+  cleanup
+  exit "$code"
+}
+trap 'cleanup' EXIT
+trap 'on_signal 130' INT
+trap 'on_signal 143' TERM
+
 REVIEW_STATUS=0
-if command -v timeout >/dev/null 2>&1; then
-  timeout "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" || REVIEW_STATUS=$?
-elif command -v perl >/dev/null 2>&1; then
-  # macOS does not ship GNU timeout; Perl's alarm provides the same fail-fast behavior.
-  perl -e 'alarm shift; exec @ARGV' "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" || REVIEW_STATUS=$?
-else
-  warn "Neither 'timeout' nor 'perl' available — running without a time limit."
-  ocr "${REVIEW_ARGS[@]}" || REVIEW_STATUS=$?
-fi
+run_review() {
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}"
+  elif command -v perl >/dev/null 2>&1; then
+    # macOS does not ship GNU timeout. This wrapper polls waitpid() with WNOHANG
+    # and kills the child at the deadline, returning 142 on timeout. A plain
+    # `perl -e 'alarm shift; exec @ARGV'` cannot be used: it signals the wrapper
+    # (printing "Alarm clock" and yielding 142) without ever killing the real
+    # `ocr` process, which then keeps running after the hook has exited.
+    perl -e '
+      my $t = shift @ARGV;
+      my $pid = fork(); die "fork: $!" unless defined $pid;
+      if (!$pid) { alarm $t; exec @ARGV or exit 127; }
+      my $deadline = time + $t;
+      while (1) {
+        return exit($? >> 8) if waitpid($pid, 1) == $pid;
+        if (time >= $deadline) { kill "KILL", $pid; waitpid($pid, 0); exit 142; }
+        select(undef, undef, undef, 0.2);
+      }
+    ' "$TIMEOUT_SECONDS" ocr "${REVIEW_ARGS[@]}" 2>/dev/null
+  else
+    warn "Neither 'timeout' nor 'perl' available — running without a time limit."
+    ocr "${REVIEW_ARGS[@]}"
+  fi
+}
+# Backgrounded so the signal handler can reap it. Job control (`set -m`) puts
+# the background job in its own process group whose PGID equals its PID, so the
+# handler can kill the whole group (ocr spawns a child of its own) without ever
+# signalling this script.
+set -m
+run_review &
+OCR_PID=$!
+set +m
+wait "$OCR_PID" || REVIEW_STATUS=$?
 
 if [[ -s "$OUTPUT_FILE" ]]; then
   if ! command -v jq >/dev/null 2>&1; then

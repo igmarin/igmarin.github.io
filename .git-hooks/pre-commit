@@ -9,24 +9,45 @@ echo "============================================="
 echo "🚀 Running Pre-commit Hooks..."
 echo "============================================="
 
-# 1. Report whitespace errors. Advisory only: this repository uses trailing
-#    double-space as a Markdown hard line break (resume/llms-resume.txt), so a
-#    hard failure here would block legitimate edits.
-echo "🔍 Checking for whitespace errors..."
-if ! git diff --cached --check; then
-  echo "⚠️  Whitespace errors found (advisory — commit proceeds)." >&2
+# 1. Report whitespace errors as advisory, but still hard-fail on conflict
+#    markers. `git diff --check` reports both, and this repository legitimately
+#    uses a trailing double-space as a Markdown hard line break
+#    (resume/llms-resume.txt), so blocking on all of its output would reject
+#    valid edits — while letting unresolved merge markers through is far worse.
+echo "🔍 Checking for whitespace and conflict markers..."
+check_output="$(git diff --cached --check 2>&1)" || true
+# `git diff --check` reports a conflict as "file:line: leftover conflict
+# marker" without echoing the marker, so detect it from the staged diff text.
+conflict_output="$(git diff --cached --diff-filter=ACM | grep -E '^\+(<<<<<<< |=======$|>>>>>>> )' || true)"
+if [ -n "$conflict_output" ]; then
+  echo "❌ Unresolved conflict markers in staged changes:" >&2
+  printf '%s\n' "$conflict_output" >&2
+  exit 1
+fi
+if [ -n "$check_output" ]; then
+  # Whitespace stays advisory: this repository uses a trailing double-space as
+  # a Markdown hard line break (resume/llms-resume.txt).
+  echo "⚠️  Whitespace errors found (advisory — commit proceeds):" >&2
+  printf '%s\n' "$check_output" >&2
 else
-  echo "✅ No whitespace errors."
+  echo "✅ No whitespace errors or conflict markers."
 fi
 
 echo "============================================="
 echo "🤖 Running advisory AI review of local changes..."
 echo "============================================="
 
-# 2. Advisory AI review. It reviews the working tree (staged, unstaged, and
-#    untracked files) and never blocks the commit.
+# 2. Advisory AI review. It reviews the staged changes (and is a no-op when
+#    nothing is staged). The review itself never blocks, but the script exits
+#    non-zero when the repository is mid-rebase/merge, so that case is
+#    propagated here rather than swallowed by a blanket `|| true`.
 if [ -x "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
-  "$REPO_ROOT/hooks/pre-commit-open-code-review" || true
+  review_status=0
+  "$REPO_ROOT/hooks/pre-commit-open-code-review" || review_status=$?
+  if [ "$review_status" -ne 0 ]; then
+    echo "❌ OpenCodeReview blocked this commit (exit $review_status)." >&2
+    exit "$review_status"
+  fi
 else
   echo "[open-code-review] hooks/pre-commit-open-code-review not found — skipping." >&2
 fi

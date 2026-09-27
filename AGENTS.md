@@ -33,7 +33,7 @@ Preview from the repository root with `python3 -m http.server 8000`. Inspect the
 
 ## Code review
 
-OpenCodeReview (Alibaba) runs automatically on pull requests to `master` via [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml). It uses DeepSeek (`deepseek-v4-flash`, medium effort) and the `DEEPSEEK_API_KEY` repository secret. Set `GH_PAT` to a bot PAT with **Pull requests: Read and write** for inline comments and the sticky summary; otherwise the workflow falls back to `GITHUB_TOKEN`.
+OpenCodeReview (Alibaba) runs automatically on pull requests to `master` via [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml). It uses DeepSeek (`deepseek-v4-flash`, medium effort) and the `DEEPSEEK_API_KEY` repository secret. It posts comments with the ephemeral `GITHUB_TOKEN`, which the workflow's `pull-requests: write` permission already covers, so no long-lived personal access token is required.
 
 The same review runs locally on every commit as an advisory step through [`.git-hooks/pre-commit`](.git-hooks/pre-commit), which delegates to [`hooks/pre-commit-open-code-review`](hooks/pre-commit-open-code-review). It never blocks a commit.
 
