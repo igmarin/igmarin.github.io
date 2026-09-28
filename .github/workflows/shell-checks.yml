@@ -25,8 +25,9 @@ concurrency:
   # Safe now that `push` is scoped to the default branch: a branch push
   # triggers only the pull_request event, so this group never cancels a
   # same-commit duplicate — it only cancels superseded runs when commits
-  # land faster than the ~10s job.
-  group: shell-checks-${{ github.event.pull_request.number || github.ref }}
+  # land faster than the ~10s job.  github.ref is unique per PR
+  # (refs/pull/<n>/merge), so runs for different PRs never collide.
+  group: shell-checks-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
