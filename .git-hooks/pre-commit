@@ -25,14 +25,17 @@ check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
 # Hard-fail on conflict markers FIRST, on the RAW output and regardless of the
 # exit code: if git emitted "leftover conflict marker" at all, the gate must
 # fire, even under unexpected exit codes from other git builds/forks.
-# `git diff --check` reports real conflicts as diagnostic lines shaped like
-# "<path>:<line>: leftover conflict marker".  Source lines echoed by git start
-# with '+', so filter those out: a staged file whose *content* merely mentions
-# the phrase (e.g. this hook's own comments) must not trip the gate.  Key off
-# the diagnostic rather than grepping the diff for the markers themselves: a
-# bare "=======" also matches legitimate content such as a Markdown setext
-# heading underline, which must not block a commit.
-marker_lines="$(printf '%s\n' "$check_output" | grep 'leftover conflict marker' | grep -v '^+' || true)"
+# `git diff --check` reports real conflicts as diagnostic lines ending in
+# "leftover conflict marker" (verified against git 2.55).  Two filters keep
+# this precise: (a) the end anchor rejects prose that merely mentions the
+# phrase mid-line, (b) `grep -v '^+'` rejects git's echoed source lines, so
+# staged content mentioning the phrase (e.g. this hook's own comments) cannot
+# trip the gate.  Residual edge: a staged file literally named "+..." emits a
+# "+name:<line>:" diagnostic that the `^+` filter also rejects — accepted, as
+# distinguishing it from source echoes is impossible and such names are
+# pathological.  Keying off the diagnostic (not grepping the diff for markers)
+# also avoids false positives on Markdown setext underlines ("=======").
+marker_lines="$(printf '%s\n' "$check_output" | grep -E ': leftover conflict marker\.?$' | grep -v '^+' || true)"
 if [ -n "$marker_lines" ]; then
   echo "❌ Unresolved conflict markers in staged changes:" >&2
   printf '%s\n' "$marker_lines" >&2
