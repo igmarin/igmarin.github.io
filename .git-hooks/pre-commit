@@ -24,16 +24,18 @@ check_skipped=0
 check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
 # Hard-fail on conflict markers FIRST, on the RAW output and regardless of the
 # exit code: if git emitted "leftover conflict marker" at all, the gate must
-# fire, even under unexpected exit codes from other git builds/forks.  Keying
-# the grep off the exit boundary instead would let a nonzero-but->2 exit that
-# still carries findings silently bypass the conflict gate.
-# `git diff --check` reports real conflicts as "leftover conflict marker".
-# Key off that instead of grepping the diff for the markers themselves: a bare
-# "=======" also matches legitimate content such as a Markdown setext heading
-# underline, which must not block a commit.
-if printf '%s\n' "$check_output" | grep -q 'leftover conflict marker'; then
+# fire, even under unexpected exit codes from other git builds/forks.
+# `git diff --check` reports real conflicts as diagnostic lines shaped like
+# "<path>:<line>: leftover conflict marker".  Source lines echoed by git start
+# with '+', so filter those out: a staged file whose *content* merely mentions
+# the phrase (e.g. this hook's own comments) must not trip the gate.  Key off
+# the diagnostic rather than grepping the diff for the markers themselves: a
+# bare "=======" also matches legitimate content such as a Markdown setext
+# heading underline, which must not block a commit.
+marker_lines="$(printf '%s\n' "$check_output" | grep 'leftover conflict marker' | grep -v '^+' || true)"
+if [ -n "$marker_lines" ]; then
   echo "❌ Unresolved conflict markers in staged changes:" >&2
-  printf '%s\n' "$check_output" | grep 'leftover conflict marker' >&2
+  printf '%s\n' "$marker_lines" >&2
   exit 1
 fi
 # Verified empirically (git 2.55): `git diff --check` exits 0 when clean and 2
