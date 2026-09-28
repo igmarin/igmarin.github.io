@@ -26,3 +26,17 @@ Open [localhost:8000](http://localhost:8000/) from the repository root. Stop the
 | `robots.txt`, `sitemap.xml` | Search crawler files |
 
 GitHub Pages publishes the root of `master` at [igmarin.github.io](https://igmarin.github.io/). Changes to the résumé or career claims should stay consistent across the HTML, text, and PDF versions. See [AGENTS.md](AGENTS.md) for the editing guide.
+
+## Code review
+
+Pull requests get an automatic OpenCodeReview pass (DeepSeek `deepseek-v4-flash`, medium effort) from [`.github/workflows/open-code-review.yml`](.github/workflows/open-code-review.yml).
+
+The same review runs locally on every commit. Enable it once per clone:
+
+```sh
+git config core.hooksPath .git-hooks
+npm install --global @alibaba-group/open-code-review@1.12.9
+export DEEPSEEK_API_KEY=sk-...   # if not already in your shell profile
+```
+
+The pre-commit review is advisory and never blocks a commit. Use `OCR_SKIP_REVIEW=1 git commit ...` to bypass it. See [AGENTS.md](AGENTS.md#code-review) for details.

@@ -1,0 +1,85 @@
+#!/bin/sh
+# Pre-commit hook: whitespace report, then an advisory OpenCodeReview pass.
+# Install with: git config core.hooksPath .git-hooks
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+echo "============================================="
+echo "🚀 Running Pre-commit Hooks..."
+echo "============================================="
+
+# 1. Report whitespace errors as advisory, but still hard-fail on conflict
+#    markers. `git diff --check` reports both, and this repository legitimately
+#    uses a trailing double-space as a Markdown hard line break
+#    (resume/llms-resume.txt), so blocking on all of its output would reject
+#    valid edits — while letting unresolved merge markers through is far worse.
+echo "🔍 Checking for whitespace and conflict markers..."
+# LC_ALL=C is load-bearing: git localizes the "leftover conflict marker" string
+# below, so on a non-English locale the match would silently never fire and
+# unresolved merge markers would pass. Marker detection itself is not localized
+# — only the message is — so pinning the locale fully closes the gap.
+check_exit=0
+check_skipped=0
+check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
+# Hard-fail on conflict markers FIRST, on the RAW output and regardless of the
+# exit code: if git emitted "leftover conflict marker" at all, the gate must
+# fire, even under unexpected exit codes from other git builds/forks.
+# `git diff --check` reports real conflicts as diagnostic lines ending in
+# "leftover conflict marker" (verified against git 2.55).  Two filters keep
+# this precise: (a) the end anchor rejects prose that merely mentions the
+# phrase mid-line, (b) `grep -v '^+'` rejects git's echoed source lines, so
+# staged content mentioning the phrase (e.g. this hook's own comments) cannot
+# trip the gate.  Residual edge: a staged file literally named "+..." emits a
+# "+name:<line>:" diagnostic that the `^+` filter also rejects — accepted, as
+# distinguishing it from source echoes is impossible and such names are
+# pathological.  Keying off the diagnostic (not grepping the diff for markers)
+# also avoids false positives on Markdown setext underlines ("=======").
+marker_lines="$(printf '%s\n' "$check_output" | grep -E ': leftover conflict marker\.?$' | grep -v '^+' || true)"
+if [ -n "$marker_lines" ]; then
+  echo "❌ Unresolved conflict markers in staged changes:" >&2
+  printf '%s\n' "$marker_lines" >&2
+  exit 1
+fi
+# Verified empirically (git 2.55): `git diff --check` exits 0 when clean and 2
+# when it finds whitespace errors or conflict markers.  Genuine git failures
+# (bad usage, not a repository) exit >= 128, e.g. 129.  So `> 2` correctly
+# separates "findings worth parsing" from "git itself failed" — using `>= 2`
+# here would discard every real finding.
+if [ "$check_exit" -gt 2 ]; then
+  echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
+  printf '%s\n' "$check_output" >&2
+  check_output=""
+  check_skipped=1
+fi
+if [ "$check_skipped" -eq 1 ]; then
+  echo "⏭️  Whitespace/conflict check skipped (git diff --check did not run)."
+elif [ -n "$check_output" ]; then
+  # Whitespace stays advisory: this repository uses a trailing double-space as
+  # a Markdown hard line break (resume/llms-resume.txt).
+  echo "⚠️  Whitespace errors found (advisory — commit proceeds):" >&2
+  printf '%s\n' "$check_output" >&2
+else
+  echo "✅ No whitespace errors or conflict markers."
+fi
+
+echo "============================================="
+echo "🤖 Running advisory AI review of local changes..."
+echo "============================================="
+
+# 2. Advisory AI review of the staged changes. The review script is advisory by
+#    contract and always exits 0, so `|| true` is a safety net that keeps a
+#    future bug in the review from ever blocking a commit.
+if [ -f "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
+  if [ -x "$REPO_ROOT/hooks/pre-commit-open-code-review" ]; then
+    "$REPO_ROOT/hooks/pre-commit-open-code-review" || echo "[open-code-review] review hook exited $? (ignored)." >&2
+  else
+    echo "[open-code-review] hooks/pre-commit-open-code-review is not executable — skipping (run: chmod +x)." >&2
+  fi
+else
+  echo "[open-code-review] hooks/pre-commit-open-code-review not found — skipping." >&2
+fi
+
+echo "============================================="
+echo "✅ Pre-commit checks finished. Commit proceeding."
+echo "============================================="
