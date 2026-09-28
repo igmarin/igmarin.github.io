@@ -45,9 +45,12 @@ fi
 
 # Git does not source shell rc files, so recover the token from the profile when
 # the parent environment does not already carry it. Uses POSIX BRE quantifiers
-# ({n,}) because BSD sed on macOS does not support GNU's \+ and ++. The last
-# assignment wins (matching shell semantics) and a trailing inline comment is
-# stripped before the surrounding quotes are removed.
+# ({n,}) because BSD sed on macOS does not support GNU's \+ and ++. Within a
+# single file the last assignment wins (tail -n 1, matching shell semantics);
+# across files, the first rc file that yields a valid-looking token wins —
+# earlier candidates ($ZDOTDIR, then ~/.zshenv, ...) take precedence, like the
+# order a shell would first encounter. A trailing inline comment is stripped
+# before the surrounding quotes are removed.
 if [[ -z "${OCR_LLM_TOKEN:-${DEEPSEEK_API_KEY:-}}" ]]; then
   # ZDOTDIR is only consulted when it is set and differs from $HOME, so the
   # same file is not read twice.
@@ -57,16 +60,28 @@ if [[ -z "${OCR_LLM_TOKEN:-${DEEPSEEK_API_KEY:-}}" ]]; then
   fi
   for rc in "${rc_candidates[@]}"; do
     [[ -r "$rc" ]] || continue
+    # Both variable names are recovered: this script documents OCR_LLM_TOKEN as
+    # the primary name with DEEPSEEK_API_KEY as its alias, and the project docs
+    # mention either one — a user who follows them and sets only
+    # OCR_LLM_TOKEN in their profile must not get "No LLM token found".
+    # Separate -e expressions per name (BSD sed lacks BRE alternation); the
+    # sed output preserves line order, so `tail -n 1` still yields the last
+    # assignment in the file, as a shell would.
     recovered="$(sed -n \
+      -e 's/^[[:space:]]*export[[:space:]]\{1,\}OCR_LLM_TOKEN=//p' \
+      -e 's/^[[:space:]]*OCR_LLM_TOKEN=//p' \
       -e 's/^[[:space:]]*export[[:space:]]\{1,\}DEEPSEEK_API_KEY=//p' \
       -e 's/^[[:space:]]*DEEPSEEK_API_KEY=//p' \
       "$rc" |
       sed -e 's/[[:space:]]\{1,\}#.*$//' -e 's/[[:space:]]*$//' |
       tail -n 1 |
       sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\\(.*\\)'\$/\\1/")"
-    # Accept only a bare token. A `$VAR` reference or an embedded space is not a
-    # usable key, so reject it and keep looking instead of failing later with a
-    # confusing authentication error.  Trust boundary (accurate): the recovered
+    # Accept only a bare token: a `$VAR` reference, an embedded space, or
+    # anything that does not look like a key is rejected, so a non-key line
+    # (aliases, options, comments) cannot be mistaken for the token.  The
+    # value is never eval'd or re-interpreted by a shell — it is exported
+    # as an env var — so the charset check is about plausibility, not
+    # injection safety.  Trust boundary (accurate): the recovered
     # value is exported as OCR_LLM_TOKEN and sent to OCR_LLM_URL — which a
     # user-supplied env value can override (a supported BYO-endpoint setup), so
     # the recovery must be trusted exactly as much as the user's own profile.
@@ -74,6 +89,9 @@ if [[ -z "${OCR_LLM_TOKEN:-${DEEPSEEK_API_KEY:-}}" ]]; then
     # bare token (no spaces/expansions), so it cannot inject shell syntax.
     if [[ "$recovered" =~ ^[A-Za-z0-9._+=/-]+$ ]]; then
       DEEPSEEK_API_KEY="$recovered"
+      # Name the source (never the value) so a stale/test key inherited from a
+      # higher-precedence rc file is diagnosable instead of silently winning.
+      log "Using API token recovered from $rc"
       break
     fi
   done
@@ -158,6 +176,7 @@ on_signal() {
   local code="$1"
   trap - EXIT INT TERM
   local target_pid=""
+  local candidate=""
   if [[ "$TIMEOUT_MODE" == "perl" ]]; then
     # The Perl wrapper writes the child's PID (also its PGID after setpgrp) to
     # CHILD_PID_FILE.  After setpgrp the child lives in its own process group,
@@ -221,10 +240,19 @@ run_review() {
         exec @ARGV or exit 127;
       }
       # Write the child PID (= its PGID) so the bash signal handler can target
-      # the whole process group on SIGINT/SIGTERM.
+      # the whole process group on SIGINT/SIGTERM.  Both failure modes are
+      # fail-safe (kill the child first, then exit 127) so this path does not
+      # leak the ocr subtree: a skipped review beats an orphaned one.  If this
+      # branch is reached before the child ran setpgrp, -$pid names no group
+      # yet, so the negative-PID kill is a no-op and the direct child kill
+      # below still reaps it before ocr is started.
+      # NOTE: no apostrophes in Perl comments — they would terminate the
+      # surrounding single-quoted shell string and break the whole script.
       if (open(my $fh, ">", $pid_file)) {
         if (!print $fh $pid) { kill "KILL", -$pid; kill "KILL", $pid; waitpid($pid, 0); exit 127; }
         close $fh;
+      } else {
+        kill "KILL", -$pid; kill "KILL", $pid; waitpid($pid, 0); exit 127;
       }
       # Belt and braces: if the bash parent signals THIS wrapper before it can
       # read the PID file (its fallback targets the wrapper group, which does
@@ -315,6 +343,9 @@ if [[ "$REVIEW_STATUS" -ne 0 ]]; then
   # 124 is the timeout exit code from both GNU timeout and our Perl wrapper.
   # 128+N means the process died from signal N (e.g. 137=SIGKILL, 143=SIGTERM),
   # which in practice also indicates a timeout or external interruption.
+  # An `ocr` that exits 3 or 124 on its own is reported with these same
+  # messages — accepted: all three mean "the review did not finish", and the
+  # commit proceeds either way, so the wording stays accurate.
   if [[ "$REVIEW_STATUS" -eq 3 ]]; then
     warn "Review skipped: neither 'timeout' nor 'perl' is available to bound the run."
   elif [[ "$REVIEW_STATUS" -eq 124 ]]; then
