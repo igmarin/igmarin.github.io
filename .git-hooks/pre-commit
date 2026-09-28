@@ -22,25 +22,30 @@ echo "🔍 Checking for whitespace and conflict markers..."
 check_exit=0
 check_skipped=0
 check_output="$(LC_ALL=C git diff --cached --check 2>&1)" || check_exit=$?
+# Hard-fail on conflict markers FIRST, on the RAW output and regardless of the
+# exit code: if git emitted "leftover conflict marker" at all, the gate must
+# fire, even under unexpected exit codes from other git builds/forks.  Keying
+# the grep off the exit boundary instead would let a nonzero-but->2 exit that
+# still carries findings silently bypass the conflict gate.
+# `git diff --check` reports real conflicts as "leftover conflict marker".
+# Key off that instead of grepping the diff for the markers themselves: a bare
+# "=======" also matches legitimate content such as a Markdown setext heading
+# underline, which must not block a commit.
+if printf '%s\n' "$check_output" | grep -q 'leftover conflict marker'; then
+  echo "❌ Unresolved conflict markers in staged changes:" >&2
+  printf '%s\n' "$check_output" | grep 'leftover conflict marker' >&2
+  exit 1
+fi
 # Verified empirically (git 2.55): `git diff --check` exits 0 when clean and 2
 # when it finds whitespace errors or conflict markers.  Genuine git failures
 # (bad usage, not a repository) exit >= 128, e.g. 129.  So `> 2` correctly
 # separates "findings worth parsing" from "git itself failed" — using `>= 2`
-# here would discard every real finding and silently defeat the conflict gate.
+# here would discard every real finding.
 if [ "$check_exit" -gt 2 ]; then
   echo "⚠️  git diff --check failed (exit $check_exit) — skipping whitespace check." >&2
   printf '%s\n' "$check_output" >&2
   check_output=""
   check_skipped=1
-fi
-# `git diff --check` already reports real conflicts as "leftover conflict
-# marker". Key off that instead of grepping the diff for the markers themselves:
-# a bare "=======" also matches legitimate content such as a Markdown setext
-# heading underline, which must not block a commit.
-if printf '%s\n' "$check_output" | grep -q 'leftover conflict marker'; then
-  echo "❌ Unresolved conflict markers in staged changes:" >&2
-  printf '%s\n' "$check_output" | grep 'leftover conflict marker' >&2
-  exit 1
 fi
 if [ "$check_skipped" -eq 1 ]; then
   echo "⏭️  Whitespace/conflict check skipped (git diff --check did not run)."
